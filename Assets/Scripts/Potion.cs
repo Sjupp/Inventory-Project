@@ -17,7 +17,9 @@ public class Potion : ItemData
         PotionClone.itemID = itemID;
         PotionClone.weight = weight;
         PotionClone.value = value;
-        //PotionClone.sprite = sprite;
+        PotionClone.sprite = sprite;
+        PotionClone.stackCount = stackCount;
+        PotionClone.stackSize = stackSize;
         PotionClone.potionType = potionType;
         PotionClone.restoreAmount = restoreAmount;
 
