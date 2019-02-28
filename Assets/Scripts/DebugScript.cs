@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ButtonScript : MonoBehaviour
+public class DebugScript : MonoBehaviour
 {
     public GameHandler main;
+    public CanvasScript canvas;
+    public GameObject buttonPrefab;
 
-    ContainerData playerContainer;
-    ContainerData selectedContainer;
+    private ContainerData playerContainer;
+    private ContainerData selectedContainer;
+    private ItemData currentlySelectedItem;
     public ItemData tempSelect;
-    ItemData currentlySelectedItem;
 
     public void Start()
     {
@@ -84,9 +87,21 @@ public class ButtonScript : MonoBehaviour
         main.SpawnItem();
     }
 
-    public void AddItemToGround()
+    private void SpawnContainerUIButton(ContainerData container)
     {
-        Debug.Log((playerContainer.items[0] as Potion).restoreAmount);
-        //Debug.Log(playerContainer.items[0].restoreAmount);
+        canvas.InstantiateContainerUI(container);
     }
+
+    public void RemoveContainerUIButton()
+    {
+        canvas.RemoveContainerUI();
+    }
+
+    public void AddButton(string text, ContainerData containerData)
+    {
+        GameObject button = Instantiate<GameObject>(buttonPrefab, transform);
+        button.GetComponentInChildren<Text>().text = text;
+        button.GetComponent<Button>().onClick.AddListener(delegate { SpawnContainerUIButton(containerData); });
+    }
+
 }
