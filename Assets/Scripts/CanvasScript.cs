@@ -23,7 +23,7 @@ public class CanvasScript : MonoBehaviour
 
         listOfContainers.Add(selectedInstance);
         containerUIList.Add(selectedInstance);
-        int numberOfRows = Mathf.CeilToInt(container.maxCapacity / 4);
+        int numberOfRows = Mathf.FloorToInt((container.maxCapacity - 1) / 4);
         selectedInstance.GetComponent<RectTransform>().sizeDelta =
             new Vector2(215, 65 + (50 * numberOfRows));
         AddContainerSlots(container.maxCapacity, selectedInstance, container);
@@ -45,22 +45,13 @@ public class CanvasScript : MonoBehaviour
         int b = container.items.Count;
         for (int i = 0; i < a; i++)
         {
-            
-        }
-        //int i = container.items.Count;
-        //Debug.Log("container items count " + i);
+            if (i < b)
+            {
+                slotList[i].GetComponent<Image>().sprite = container.items[i].sprite;
+            }
 
-        foreach (GameObject slot in slotList)
-        {
-            //if (i >= 0)
-            //{
-                slot.GetComponent<Image>().sprite = container.items[0].sprite;
-            //    i--;
-            //}
         }
     }
-
-
 
     public void RemoveContainerUI()
     {

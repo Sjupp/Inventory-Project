@@ -7,6 +7,7 @@ public class GameHandler: MonoBehaviour
     private int ContainerID = 0;
     public List<ContainerData> allContainers;
     public DebugScript debugScript;
+    //public UIHandler uiHandler;
 
     public ItemData potion01;
     private ItemData tempItem;
@@ -15,8 +16,8 @@ public class GameHandler: MonoBehaviour
     {
         allContainers = new List<ContainerData>();
         CreateInventory("N/A", 0);
-        CreateInventory("Player Inventory", 10);
-        CreateInventory("The Ground", 1000);
+        CreateInventory("Player Inventory", 7);
+        CreateInventory("The Ground", 9);
     }
 
     private void CreateInventory(string str, int capacity)
@@ -24,13 +25,13 @@ public class GameHandler: MonoBehaviour
         ContainerData container = new ContainerData(ContainerID, str, capacity);
         allContainers.Add(container);
         ContainerID++;
-        AddDebugButton(str, container);
+        //AddDebugButton(str, container);
     }
 
-    private void AddDebugButton(string str, ContainerData container)
-    {
-        debugScript.AddButton(str, container);
-    }
+    //private void AddDebugButton(string str, ContainerData container)
+    //{
+    //    debugScript.AddButton(str, container);
+    //}
 
     public void SpawnItem()
     {

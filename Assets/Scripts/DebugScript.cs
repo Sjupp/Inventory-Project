@@ -8,9 +8,10 @@ public class DebugScript : MonoBehaviour
     public GameHandler main;
     public CanvasScript canvas;
     public GameObject buttonPrefab;
+    public UIHandler uiHandler;
 
     private ContainerData playerContainer;
-    private ContainerData selectedContainer;
+    private ContainerData groundContainer;
     private ItemData currentlySelectedItem;
     public ItemData tempSelect;
 
@@ -18,7 +19,7 @@ public class DebugScript : MonoBehaviour
     {
         currentlySelectedItem = tempSelect;
         playerContainer = main.allContainers[1];
-        selectedContainer = main.allContainers[2];
+        groundContainer = main.allContainers[2];
     }
 
     public void MoveObject(ItemData item, ContainerData from, ContainerData to)
@@ -34,6 +35,7 @@ public class DebugScript : MonoBehaviour
                 Debug.Log("Moved " + tempItem.itemName +
                           " from " + from.containerName +
                           " to " + to.containerName);
+                uiHandler.UpdateContainer(from, to);
             }
             else
             {
@@ -61,12 +63,12 @@ public class DebugScript : MonoBehaviour
 
     public void PickUpObject() //pick up
     {
-        MoveObject(tempSelect, selectedContainer, playerContainer);
+        MoveObject(tempSelect, groundContainer, playerContainer);
     }
 
     public void DropObject() // drop
     {
-        MoveObject(tempSelect, playerContainer, selectedContainer);
+        MoveObject(tempSelect, playerContainer, groundContainer);
     }
 
     public void DebugContainers()
@@ -87,21 +89,31 @@ public class DebugScript : MonoBehaviour
         main.SpawnItem();
     }
 
-    private void SpawnContainerUIButton(ContainerData container)
+    public void UIHandlerThing()
     {
-        canvas.InstantiateContainerUI(container);
+        uiHandler.CreateContainerUIElement(playerContainer);
+    }
+    public void UIHandlerThing1()
+    {
+        uiHandler.CreateContainerUIElement(groundContainer);
     }
 
-    public void RemoveContainerUIButton()
-    {
-        canvas.RemoveContainerUI();
-    }
+    // *** Cool example of Listener stuff + delegate ***
+    //
+    //private void SpawnContainerUIButton(ContainerData container)
+    //{
+    //    canvas.InstantiateContainerUI(container);
+    //}
 
-    public void AddButton(string text, ContainerData containerData)
-    {
-        GameObject button = Instantiate<GameObject>(buttonPrefab, transform);
-        button.GetComponentInChildren<Text>().text = text;
-        button.GetComponent<Button>().onClick.AddListener(delegate { SpawnContainerUIButton(containerData); });
-    }
+    //public void RemoveContainerUIButton()
+    //{
+    //    canvas.RemoveContainerUI();
+    //}
 
+    //public void AddButton(string text, ContainerData containerData)
+    //{
+    //    GameObject button = Instantiate<GameObject>(buttonPrefab, transform);
+    //    button.GetComponentInChildren<Text>().text = text;
+    //    button.GetComponent<Button>().onClick.AddListener(delegate { SpawnContainerUIButton(containerData); });
+    //}
 }
