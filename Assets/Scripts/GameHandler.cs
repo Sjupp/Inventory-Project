@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GameHandler: MonoBehaviour
 {
+
+    // TA BORT ID-LISTOR, LÄGG TILL "CURRENTLY SELECTED CONTAINER" osv
+
     private int ContainerID = 0;
     public List<ContainerData> allContainers;
     public DebugScript debugScript;
@@ -71,7 +74,6 @@ public class GameHandler: MonoBehaviour
             }
         }
         Debug.Log("No valid containerID match! Returning bad container");
-        return allContainers[0];
+        return allContainers[0]; //pls lemme null
     }
-
 }

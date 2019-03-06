@@ -33,8 +33,7 @@ public class Container : MonoBehaviour
         slots = new GameObject[container.maxCapacity];
         for (int i = 0; i < container.maxCapacity; i++)
         {
-            slotPrefab = Instantiate<GameObject>(slotPrefab, transform);
-            slots[i] = slotPrefab;
+            slots[i] = Instantiate<GameObject>(slotPrefab, transform);
         }
     }
 

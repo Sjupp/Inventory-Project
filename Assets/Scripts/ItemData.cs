@@ -9,6 +9,7 @@ public abstract class ItemData : ScriptableObject
     public int itemID;
     public string description = "No Description";
     public Sprite sprite;
+    public ContainerData currentContainer;
 
     [Header("Physical")]
     public float weight;
@@ -18,7 +19,7 @@ public abstract class ItemData : ScriptableObject
 
     [Header("Stackable")]
     public int stackCount = 1;
-    public int stackSize = 1;
+    public int stackMaxCount = 1;
 
 
 

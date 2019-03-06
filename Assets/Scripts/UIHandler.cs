@@ -35,11 +35,11 @@ public class UIHandler : MonoBehaviour
 
     public Container FindContainerDataInContainer(ContainerData containerData)
     {
-        foreach (Container container in listOfActiveContainers)
+        foreach (Container thisContainer in listOfActiveContainers)
         {
-            if (container.container.containerID == containerData.containerID)
+            if (thisContainer.container.containerID == containerData.containerID)
             {
-                return container;
+                return thisContainer;
             }
         }
         return null;
