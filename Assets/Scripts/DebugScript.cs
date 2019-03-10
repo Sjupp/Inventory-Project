@@ -5,28 +5,28 @@ using UnityEngine.UI;
 
 public class DebugScript : MonoBehaviour
 {
-    public GameHandler main;
+    public GameHandler gameHandler;
     public CanvasScript canvas;
     public GameObject buttonPrefab;
     public UIHandler uiHandler;
 
     private ContainerData playerContainer;
-    private ContainerData groundContainer;
+    private ContainerData currentlySelectedContainer;
     private ItemData currentlySelectedItem;
     public ItemData tempSelect;
 
     public void Start()
     {
         currentlySelectedItem = tempSelect;
-        playerContainer = main.allContainers[1];
-        groundContainer = main.allContainers[2];
+        playerContainer = gameHandler.allContainers[0];
+        currentlySelectedContainer = gameHandler.allContainers[1];
     }
 
     public void MoveObject(ItemData item, ContainerData from, ContainerData to)
     {
         if (from.items.Count != 0)
         {
-            ItemData tempItem = findItemInContainer(item, from);
+            ItemData tempItem = FindItemInContainer(item, from);
 
             if (to.items.Count < to.maxCapacity)
             {
@@ -48,7 +48,29 @@ public class DebugScript : MonoBehaviour
         }
     }
 
-    private ItemData findItemInContainer(ItemData item, ContainerData container)
+    public void MoveItemTo(ItemData item, ContainerData targetContainer)
+    {
+        Debug.Log(item);
+        Debug.Log(item.currentContainer.containerName);
+        ItemData tempItem = FindItemInContainer(item, item.currentContainer);
+
+        if (targetContainer.items.Count < targetContainer.maxCapacity)
+        {
+            targetContainer.items.Add(tempItem.GetClone());
+            item.currentContainer.items.RemoveAt(0);
+            Debug.Log("Moved " + tempItem.itemName +
+                        " from " + item.currentContainer.containerName +
+                        " to " + targetContainer.containerName);
+            uiHandler.UpdateContainer(item.currentContainer, targetContainer);
+            item.currentContainer = targetContainer;
+        }
+        else
+        {
+            Debug.Log(targetContainer.containerName + " is full!");
+        }
+    }
+
+    private ItemData FindItemInContainer(ItemData item, ContainerData container)
     {
         foreach (ItemData itm in container.items)
         {
@@ -63,18 +85,21 @@ public class DebugScript : MonoBehaviour
 
     public void PickUpObject() //pick up
     {
-        MoveObject(tempSelect, groundContainer, playerContainer);
+        currentlySelectedItem = gameHandler.allContainers[0].items[0];//wtf have I done
+        //MoveObject(tempSelect, groundContainer, playerContainer);
+        MoveItemTo(currentlySelectedItem, playerContainer);
     }
 
     public void DropObject() // drop
     {
-        MoveObject(tempSelect, playerContainer, groundContainer);
+        //MoveObject(tempSelect, playerContainer, groundContainer);
+        MoveItemTo(currentlySelectedItem, currentlySelectedContainer);
     }
 
     public void DebugContainers()
     {
-        Debug.Log("Total number of containers " + main.allContainers.Count);
-        foreach (ContainerData container in main.allContainers)
+        Debug.Log("Total number of containers " + gameHandler.allContainers.Count);
+        foreach (ContainerData container in gameHandler.allContainers)
         {
             Debug.Log(container.containerName + " has " + container.items.Count + " items stored:");
             foreach (ItemData item in container.items)
@@ -86,16 +111,16 @@ public class DebugScript : MonoBehaviour
 
     public void SpawnItem()
     {
-        main.SpawnItem();
+        gameHandler.SpawnItem();
     }
 
     public void UIHandlerThing()
     {
-        uiHandler.CreateContainerUIElement(playerContainer);
+        uiHandler.CreateContainerUIElement(playerContainer, -200, -200);
     }
     public void UIHandlerThing1()
     {
-        uiHandler.CreateContainerUIElement(groundContainer);
+        uiHandler.CreateContainerUIElement(currentlySelectedContainer, 200, -200);
     }
 
     // *** Cool example of Listener stuff + delegate ***

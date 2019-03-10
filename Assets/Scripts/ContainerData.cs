@@ -16,5 +16,4 @@ public struct ContainerData
         this.maxCapacity = maxC;
         this.items = new List<ItemData>();
     }
-
 }

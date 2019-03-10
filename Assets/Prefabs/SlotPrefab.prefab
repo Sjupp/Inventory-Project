@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1483895828440814200}
   - component: {fileID: 8008511166176896989}
   - component: {fileID: 6567177274108483720}
+  - component: {fileID: 4593807333378851529}
+  - component: {fileID: 2128677428600647051}
   m_Layer: 5
   m_Name: SlotPrefab
   m_TagString: Untagged
@@ -74,3 +76,52 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &4593807333378851529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20272972635102799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deba9e2a2db5f0f4aa7d934ab689e6fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2128677428600647051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20272972635102799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126ad007dc8827c41a1dca1f8303865c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targets:
+  - graphic: {fileID: 6567177274108483720}
+    defaultColor: {r: 1, g: 1, b: 1, a: 1}
+    hoverColor: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
+    clickColor: {r: 0, g: 0, b: 0, a: 1}
+  enter:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  down:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  up:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  exit:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null

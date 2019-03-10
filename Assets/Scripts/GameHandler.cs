@@ -9,59 +9,95 @@ public class GameHandler: MonoBehaviour
 
     private int ContainerID = 0;
     public List<ContainerData> allContainers;
-    public DebugScript debugScript;
-    //public UIHandler uiHandler;
+    public ContainerData playerInventory;
 
+    public DebugScript debugScript;
+    public UIHandler uinterfaceHandler;
+
+    public List<ItemData> muhItems;
     public ItemData potion01;
     private ItemData tempItem;
 
     public void Awake()
     {
         allContainers = new List<ContainerData>();
-        CreateInventory("N/A", 0);
-        CreateInventory("Player Inventory", 7);
+        CreatePlayerInventory("Player Inventory", 7);
         CreateInventory("The Ground", 9);
+        LoadItems();
+        SpawnItem();
+        SpawnItem();
+        SpawnItem();
+    }
+
+    public void Start()
+    {
+        UIHandlerThing();
+        UIHandlerThing1();
+    }
+
+
+    private void CreatePlayerInventory(string str, int capacity)
+    {
+        playerInventory = new ContainerData(ContainerID, str, capacity);
+        allContainers.Add(playerInventory);
+        ContainerID++;
     }
 
     private void CreateInventory(string str, int capacity)
     {
-        ContainerData container = new ContainerData(ContainerID, str, capacity);
-        allContainers.Add(container);
+        allContainers.Add(new ContainerData(ContainerID, str, capacity));
         ContainerID++;
-        //AddDebugButton(str, container);
     }
 
-    //private void AddDebugButton(string str, ContainerData container)
-    //{
-    //    debugScript.AddButton(str, container);
-    //}
+    public void UIHandlerThing()
+    {
+        uinterfaceHandler.CreateContainerUIElement(allContainers[0], -200, -200);
+    }
+    public void UIHandlerThing1()
+    {
+        uinterfaceHandler.CreateContainerUIElement(allContainers[1], 200, -200);
+    }
+
+    private void LoadItems()
+    {
+        muhItems = new List<ItemData>();
+        foreach (ItemData item in Resources.LoadAll("Scriptable Objects/Potions/"))
+        {
+            muhItems.Add(item);
+        }
+    }
+
+    private ItemData GetRandomItem()
+    {
+        return muhItems[Random.Range(0, muhItems.Count)];
+    }
 
     public void SpawnItem()
     {
+        //tempItem = GetRandomItem().GetClone();
         tempItem = potion01.GetClone();
         Debug.Log("Spawned " + tempItem.itemName);
-        AddItemToContainer(tempItem, 1);
+        AddItemToContainer(tempItem, allContainers[0]);
         tempItem = null;
     }
 
-    public void AddItemToContainer(ItemData item, int id)
+    public void AddItemToContainer(ItemData item, ContainerData targetContainer)
     {
-        ContainerData targetContainer = FindContainer(id);
-        if (targetContainer.containerID >= 1)
-        {
-            if (targetContainer.items.Count < targetContainer.maxCapacity)
-            {
-                targetContainer.items.Add(item);
-                Debug.Log("Added an/a " + item.itemName +
-                          " to container " + targetContainer.containerName);
-            }
-            else
-            {
-                Debug.Log("Can't add item to container " + targetContainer.containerName +
-                          " it is already at max capacity!");
-            }
-        }
 
+        if (targetContainer.items.Count < targetContainer.maxCapacity)
+        {
+            targetContainer.items.Add(item);
+            tempItem.currentContainer = targetContainer;
+            Debug.Log(tempItem.currentContainer.containerName);
+
+            Debug.Log("Added an/a " + item.itemName +
+                        " to container " + targetContainer.containerName);
+        }
+        else
+        {
+            Debug.Log("Can't add item to container " + targetContainer.containerName +
+                        " it is already at max capacity!");
+        }
     }
 
     public ContainerData FindContainer(int containerID)

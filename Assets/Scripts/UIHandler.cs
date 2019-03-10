@@ -5,14 +5,17 @@ using UnityEngine;
 public class UIHandler : MonoBehaviour
 {
     public GameObject containerPrefab;
-    public List<Container> listOfActiveContainers;
+    public List<ContainerUI> listOfActiveContainers;
 
-    public void CreateContainerUIElement(ContainerData container)
+    public ContainerData CurrentlySelectedContainer { get; set; }
+    public ItemData CurrentlySelectedItem { get; set; }
+
+    public void CreateContainerUIElement(ContainerData container, int x, int y)
     {
         GameObject containerObject = Instantiate<GameObject>(containerPrefab, transform);
-        listOfActiveContainers.Add(containerObject.GetComponent<Container>());
-        containerObject.GetComponent<Container>().InitializeContainer(container);
-        //listOfActiveContainers[listOfActiveContainers.Count].InitializeContainer(container); //maybe?
+        listOfActiveContainers.Add(containerObject.GetComponent<ContainerUI>());
+        containerObject.GetComponent<ContainerUI>().InitializeContainer(container, x, y, this);
+        containerObject.name = container.containerName;
     }
 
     public void UpdateContainer(ContainerData one, ContainerData two)
@@ -28,16 +31,46 @@ public class UIHandler : MonoBehaviour
         }
     }
 
-    private void ToggleContainer()
-    {
+    //public void ToggleContainer()
+    //{
 
+    //}
+
+    public void SlotEnter(ContainerUI container, SlotScript slot)
+    {
+        //Debug.Log("");
     }
 
-    public Container FindContainerDataInContainer(ContainerData containerData)
+    public void SlotDown(ContainerUI container, SlotScript slot)
     {
-        foreach (Container thisContainer in listOfActiveContainers)
+        //Debug.Log("2");
+    }
+
+    public void SlotUp(ContainerUI container, SlotScript slot)
+    {
+        if (slot.slotItem != null)
         {
-            if (thisContainer.container.containerID == containerData.containerID)
+            Debug.Log("Clicked slot " + slot.SlotNumber + 
+                " in " + container.containerData.containerName + ". It contains "
+                + slot.slotItem.itemName);
+        }
+        else
+        {
+            Debug.Log("Clicked slot " + slot.SlotNumber +
+                " in " + container.containerData.containerName + ". It contains no item!");
+        }
+    }
+
+    public void SlotExit(ContainerUI container, SlotScript slot)
+    {
+        //Debug.Log("4");
+    }
+
+    public ContainerUI FindContainerDataInContainer(ContainerData containerData)
+    {
+        foreach (ContainerUI thisContainer in listOfActiveContainers)
+        {
+            if (thisContainer.containerData.containerID == containerData.containerID)
             {
                 return thisContainer;
             }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7191de4b6e54a0e4fb2f6cdb09259680, type: 3}
+  m_Name: Pot_L_Mana
+  m_EditorClassIdentifier: 
+  itemName: Large Potion of Mana
+  itemID: 0
+  description: No Description
+  sprite: {fileID: 21300000, guid: f9192b23f68f75a41ba9e9b62bb23c99, type: 3}
+  currentContainer: {fileID: 0}
+  weight: 1
+  value: 10
+  stackCount: 1
+  stackMaxCount: 1
+  potionType: 1
+  restoreAmount: 25
