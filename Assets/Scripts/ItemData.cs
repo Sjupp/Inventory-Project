@@ -19,8 +19,9 @@ public abstract class ItemData : ScriptableObject
     public int value;
 
     [Header("Stackable")]
+    public bool stackable = false;
     public int stackCount = 1;
-    public int stackMaxCount = 1;
+    public int stackLimit = 1;
 
 
 

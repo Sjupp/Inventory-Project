@@ -18,8 +18,9 @@ public class Potion : ItemData
         PotionClone.weight = weight;
         PotionClone.value = value;
         PotionClone.sprite = sprite;
+        PotionClone.stackable = stackable;
         PotionClone.stackCount = stackCount;
-        PotionClone.stackMaxCount = stackMaxCount;
+        PotionClone.stackLimit = stackLimit;
 
         PotionClone.potionType = potionType;
         PotionClone.restoreAmount = restoreAmount;
