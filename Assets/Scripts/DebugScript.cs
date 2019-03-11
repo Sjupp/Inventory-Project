@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class DebugScript : MonoBehaviour
 {
     public GameHandler gameHandler;
-    public CanvasScript canvas;
     public GameObject buttonPrefab;
     public UIHandler uiHandler;
 
@@ -35,7 +34,7 @@ public class DebugScript : MonoBehaviour
                 Debug.Log("Moved " + tempItem.itemName +
                           " from " + from.containerName +
                           " to " + to.containerName);
-                uiHandler.UpdateContainer(from, to);
+                //uiHandler.UpdateContainer(from, to);
             }
             else
             {
@@ -61,7 +60,7 @@ public class DebugScript : MonoBehaviour
             Debug.Log("Moved " + tempItem.itemName +
                         " from " + item.currentContainer.containerName +
                         " to " + targetContainer.containerName);
-            uiHandler.UpdateContainer(item.currentContainer, targetContainer);
+            //uiHandler.UpdateContainer(item.currentContainer, targetContainer);
             item.currentContainer = targetContainer;
         }
         else

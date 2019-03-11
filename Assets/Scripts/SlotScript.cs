@@ -6,23 +6,28 @@ using UnityEngine.UI;
 
 public class SlotScript : MonoBehaviour
 {
-    public ContainerUI ParentContainer { get; set; }
+    public ContainerUI ParentContainer { get; set; } // Is set upon creation inside ContainerUI class
     //public ContainerData ParentContainerData { get; set; }
     public int SlotID { get; set; }
     public int SlotNumber { get { return (SlotID + 1); } }
 
     public ItemData slotItem;
 
-    public void UpdateSlot(ItemData item)
-    {
-        slotItem = item;
-        gameObject.GetComponent<Image>().sprite = item.sprite;
-    }
-
     public void UpdateSlot()
     {
-        slotItem = null;
-        gameObject.GetComponent<Image>().sprite = null;
+        if (ParentContainer != null)
+        {
+            if (ParentContainer.containerData.items.Count > SlotID)
+            {
+                slotItem = ParentContainer.containerData.items[SlotID];
+                gameObject.GetComponent<Image>().sprite = slotItem.sprite;
+            }
+            else
+            {
+                slotItem = null;
+                gameObject.GetComponent<Image>().sprite = null;
+            }
+        }
     }
 
 }

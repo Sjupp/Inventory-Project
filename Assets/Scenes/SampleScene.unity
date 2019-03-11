@@ -1129,6 +1129,7 @@ MonoBehaviour:
   containerPrefab: {fileID: 3876019533682895601, guid: 7568b5e41aec41c49b95aecc140b9295,
     type: 3}
   listOfActiveContainers: []
+  gameHandler: {fileID: 800636546}
 --- !u!1 &1636276732
 GameObject:
   m_ObjectHideFlags: 0
@@ -1583,7 +1584,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameHandler: {fileID: 800636546}
-  canvas: {fileID: 0}
   buttonPrefab: {fileID: 340036085631123039, guid: bc0fd71323a43ca45b33a16e04234781,
     type: 3}
   uiHandler: {fileID: 1588125946}

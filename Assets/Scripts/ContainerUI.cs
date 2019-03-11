@@ -16,7 +16,7 @@ public class ContainerUI : MonoBehaviour
 
         UpdateUIFrameSize();
         CreateSlots(handler);
-        UpdateSlots(container);
+        UpdateAllSlots();
         GetComponent<RectTransform>().anchoredPosition =
             new Vector2(x, y);
     }
@@ -40,28 +40,23 @@ public class ContainerUI : MonoBehaviour
 
             var button = slots[i].GetComponent<CustomButton>();
             button.enter.AddListener(delegate { handler.SlotEnter(this, slot); });
-            button.down.AddListener(delegate { handler.SlotDown(this, slot); });
-            button.up.AddListener(delegate { handler.SlotUp(this, slot); });
+            button.downLeft.AddListener(delegate { handler.SlotDown(this, slot); });
+            button.upLeft.AddListener(delegate { handler.SlotUp(this, slot); });
             button.exit.AddListener(delegate { handler.SlotExit(this, slot); });
         }
     }
 
-    public void UpdateSlots(ContainerData container)
+    public void UpdateAllSlots()
     {
-        this.containerData = container;
-        int i = 0;
-        foreach (GameObject slot in slots)
+        foreach (var item in slots)
         {
-            if (i < container.items.Count)
-            {
-                slots[i].GetComponent<SlotScript>().UpdateSlot(container.items[i]);
-            }
-            else
-            {
-                slots[i].GetComponent<SlotScript>().UpdateSlot();
-            }
-            i++;
+            item.GetComponent<SlotScript>().UpdateSlot();
         }
+    }
+
+    public void UpdateOneSlot(int slotID)
+    {
+        slots[slotID].GetComponent<SlotScript>().UpdateSlot();
     }
 
 }

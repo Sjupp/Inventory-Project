@@ -10,6 +10,8 @@ public class GameHandler: MonoBehaviour
     private int ContainerID = 0;
     public List<ContainerData> allContainers;
     public ContainerData playerInventory;
+    public ContainerData currentlySelectedContainer;
+
 
     public DebugScript debugScript;
     public UIHandler uinterfaceHandler;
@@ -23,7 +25,11 @@ public class GameHandler: MonoBehaviour
         allContainers = new List<ContainerData>();
         CreatePlayerInventory("Player Inventory", 7);
         CreateInventory("The Ground", 9);
+        currentlySelectedContainer = FindContainer(1);
         LoadItems();
+        SpawnItem();
+        SpawnItem();
+        SpawnItem();
         SpawnItem();
         SpawnItem();
         SpawnItem();
@@ -32,6 +38,7 @@ public class GameHandler: MonoBehaviour
     public void Start()
     {
         UIHandlerThing();
+        Debug.Log(3);
         UIHandlerThing1();
     }
 
@@ -74,8 +81,8 @@ public class GameHandler: MonoBehaviour
 
     public void SpawnItem()
     {
-        //tempItem = GetRandomItem().GetClone();
-        tempItem = potion01.GetClone();
+        tempItem = GetRandomItem().GetClone();
+        //tempItem = potion01.GetClone();
         Debug.Log("Spawned " + tempItem.itemName);
         AddItemToContainer(tempItem, allContainers[0]);
         tempItem = null;
@@ -88,8 +95,6 @@ public class GameHandler: MonoBehaviour
         {
             targetContainer.items.Add(item);
             tempItem.currentContainer = targetContainer;
-            Debug.Log(tempItem.currentContainer.containerName);
-
             Debug.Log("Added an/a " + item.itemName +
                         " to container " + targetContainer.containerName);
         }

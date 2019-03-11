@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class UIHandler : MonoBehaviour
 {
+    public GameHandler gameHandler;
     public GameObject containerPrefab;
     public List<ContainerUI> listOfActiveContainers;
 
-    public ContainerData CurrentlySelectedContainer { get; set; }
-    public ItemData CurrentlySelectedItem { get; set; }
+    private ItemData CurrentlySelectedItem { get; set; }
 
     public void CreateContainerUIElement(ContainerData container, int x, int y)
     {
@@ -18,27 +18,17 @@ public class UIHandler : MonoBehaviour
         containerObject.name = container.containerName;
     }
 
-    public void UpdateContainer(ContainerData one, ContainerData two)
-    {
-        if (FindContainerDataInContainer(one) != null) 
-        {
-            FindContainerDataInContainer(one).UpdateSlots(one);
-        }
-
-        if (FindContainerDataInContainer(two) != null)
-        {
-            FindContainerDataInContainer(two).UpdateSlots(two);
-        }
-    }
-
     //public void ToggleContainer()
     //{
 
     //}
 
+    #region ButtonEvents
+
     public void SlotEnter(ContainerUI container, SlotScript slot)
     {
         //Debug.Log("");
+        slot.UpdateSlot();
     }
 
     public void SlotDown(ContainerUI container, SlotScript slot)
@@ -48,16 +38,33 @@ public class UIHandler : MonoBehaviour
 
     public void SlotUp(ContainerUI container, SlotScript slot)
     {
+
         if (slot.slotItem != null)
         {
-            Debug.Log("Clicked slot " + slot.SlotNumber + 
-                " in " + container.containerData.containerName + ". It contains "
-                + slot.slotItem.itemName);
+            //Debug.Log("Clicked slot " + slot.SlotNumber + 
+            //    " in " + container.containerData.containerName + ". It contains "
+            //    + slot.slotItem.itemName);
+
+            if (container.containerData.containerID == gameHandler.currentlySelectedContainer.containerID)
+                MoveObjectInSlot(slot, slot.slotItem.currentContainer, gameHandler.playerInventory); //pick up
+            else
+                MoveObjectInSlot(slot, slot.slotItem.currentContainer, gameHandler.currentlySelectedContainer); //drop
+
+            //CurrentlySelectedItem = slot.slotItem;
+            //Debug.Log("curSelItem: " + CurrentlySelectedItem.itemName);
+
         }
         else
         {
             Debug.Log("Clicked slot " + slot.SlotNumber +
                 " in " + container.containerData.containerName + ". It contains no item!");
+
+            //if (slot.slotItem != CurrentlySelectedItem)
+            //{
+            //    Debug.Log("Theoretically moving " + CurrentlySelectedItem.itemName + " from "
+            //              + CurrentlySelectedItem.currentContainer.containerName + " to slot " + slot.SlotNumber + " in " + container.containerData.containerName);
+            //    CurrentlySelectedItem = null;
+            //}
         }
     }
 
@@ -66,15 +73,42 @@ public class UIHandler : MonoBehaviour
         //Debug.Log("4");
     }
 
-    public ContainerUI FindContainerDataInContainer(ContainerData containerData)
+    #endregion
+
+    public void MoveObjectInSlot(SlotScript slot, ContainerData from, ContainerData to)
     {
-        foreach (ContainerUI thisContainer in listOfActiveContainers)
+        if (from.items.Count != 0)
         {
-            if (thisContainer.containerData.containerID == containerData.containerID)
+            if (to.items.Count < to.maxCapacity)
             {
-                return thisContainer;
+                //Add clone and update its currentContainer
+                ItemData clone = slot.slotItem.GetClone();
+                clone.currentContainer = to;
+                to.items.Add(clone);
+
+                //Update new container slots
+                // ???
+
+                //Remove item from its old container
+                from.items.RemoveAt(slot.SlotID);
+
+                Debug.Log("Moved " + slot.slotItem.itemName +
+                          " from " + from.containerName +
+                          " to " + to.containerName);
+                //Update old container slots
+                slot.ParentContainer.UpdateAllSlots();
+
+
+            }
+            else
+            {
+                Debug.Log(to.containerName + " is full!");
             }
         }
-        return null;
+        else
+        {
+            Debug.Log(from.containerName + " is empty!");
+        }
     }
+
 }

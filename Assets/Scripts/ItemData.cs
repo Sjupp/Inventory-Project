@@ -10,6 +10,7 @@ public abstract class ItemData : ScriptableObject
     public string description = "No Description";
     public Sprite sprite;
     public ContainerData currentContainer;
+    public SlotScript currentSlot; // probably unused ???
 
     [Header("Physical")]
     public float weight;

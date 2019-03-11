@@ -10,6 +10,8 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     #region Variables
 
+    private bool enteredButton;
+
     #region Targets
 
     [SerializeField] private List<Target> targets = new List<Target>();
@@ -20,8 +22,10 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
 
     [SerializeField] public UnityEvent enter;
-    [SerializeField] public UnityEvent down;
-    [SerializeField] public UnityEvent up;
+    [SerializeField] public UnityEvent downLeft;
+    [SerializeField] public UnityEvent downRight;
+    [SerializeField] public UnityEvent upLeft;
+    [SerializeField] public UnityEvent upRight;
     [SerializeField] public UnityEvent exit;
 
     #endregion
@@ -100,7 +104,7 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData pointerEventData)
     {
-
+        enteredButton = true;
         foreach (Target target in targets)
         {
             target.GetGraphic().color = target.GetHoverColor();
@@ -120,30 +124,58 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 target.GetGraphic().color = target.GetClickColor();
             }
 
-            down.Invoke();
+            downLeft.Invoke();
+
+        }
+
+        if (pointerEventData.button == PointerEventData.InputButton.Right)
+        {
+
+            foreach (Target target in targets)
+            {
+                target.GetGraphic().color = target.GetClickColor();
+            }
+
+            downRight.Invoke();
 
         }
 
     }
     public void OnPointerUp(PointerEventData pointerEventData)
     {
-
-        if (pointerEventData.button == PointerEventData.InputButton.Left)
+        if (enteredButton)
         {
-
-            foreach (Target target in targets)
+            if (pointerEventData.button == PointerEventData.InputButton.Left)
             {
-                target.GetGraphic().color = target.GetHoverColor();
+
+                foreach (Target target in targets)
+                {
+                    target.GetGraphic().color = target.GetHoverColor();
+                }
+
+                upLeft.Invoke();
+
             }
 
-            up.Invoke();
+            if (pointerEventData.button == PointerEventData.InputButton.Right)
+            {
+
+                foreach (Target target in targets)
+                {
+                    target.GetGraphic().color = target.GetHoverColor();
+                }
+
+                upRight.Invoke();
+
+            }
 
         }
 
     }
+
     public void OnPointerExit(PointerEventData pointerEventData)
     {
-
+        enteredButton = false;
         foreach (Target target in targets)
         {
             target.GetGraphic().color = target.GetDefaultColor();
