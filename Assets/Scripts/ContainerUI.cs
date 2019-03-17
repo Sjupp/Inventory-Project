@@ -46,6 +46,11 @@ public class ContainerUI : MonoBehaviour
         }
     }
 
+    public GameObject GetSlot(int x)
+    {
+        return slots[x];
+    }
+
     public void UpdateAllSlots()
     {
         foreach (var item in slots)

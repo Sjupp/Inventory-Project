@@ -9,10 +9,13 @@ public struct ContainerData
     public int maxCapacity;
     public List<ItemData> items;
     
-    public ContainerData(int id, string ctrNm, int maxC)
+    // To prevent accidentally putting stuff in a temp loot window
+    //public bool canMoveItemsInto;
+    
+    public ContainerData(int id, string containerName, int maxC)
     {
         this.containerID = id;
-        this.containerName = ctrNm;
+        this.containerName = containerName;
         this.maxCapacity = maxC;
         this.items = new List<ItemData>();
     }

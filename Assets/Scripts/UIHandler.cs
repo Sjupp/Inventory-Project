@@ -81,13 +81,13 @@ public class UIHandler : MonoBehaviour
         {
             if (to.items.Count < to.maxCapacity)
             {
+
                 //Add clone and update its currentContainer
                 ItemData clone = slot.slotItem.GetClone();
                 clone.currentContainer = to;
                 to.items.Add(clone);
 
                 //Update new container slots
-                // ???
 
                 //Remove item from its old container
                 from.items.RemoveAt(slot.SlotID);
