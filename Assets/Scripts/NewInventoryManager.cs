@@ -179,42 +179,25 @@ public class NewInventoryManager : MonoBehaviour
         ContainerData currentContainer;
         ContainerData otherContainer;
         ItemData tempItem;
-        bool freeSlot;
-        int freeSlotIndex;
 
-        Debug.Log(1);
         currentContainer = GetCurrentContainer(slot);
-        Debug.Log(1);
         tempItem = GetItem(currentContainer, slotIndex);
-        Debug.Log(1);
         otherContainer = GetOtherContainer(currentContainer);
-        Debug.Log(1);
-        freeSlot = !IsFull(otherContainer);
-        Debug.Log(1);
-        if (freeSlot)
+        if (HasSpace(otherContainer) && tempItem != null)
         {
-            freeSlotIndex = GetFirstAvailableSlot(otherContainer);
-            //move what, in current slot, from container, to container, to new slot
-            MoveItem(tempItem, slotIndex, currentContainer, otherContainer, freeSlotIndex);
+            //freeSlotIndex = GetFirstAvailableSlot(otherContainer); Add this when/if you cba to implement null slots
+            Debug.Log("Hej");
+            //move what, in current slot, from container, to container
+            MoveItem(tempItem, slotIndex, currentContainer, otherContainer);
         }
         else
             Debug.Log(otherContainer.containerName + " is full!");
-
-
-        if (tempItem)
-            Debug.Log("Slot " + slotIndex + ", " + currentContainer.containerName + ", " + currentContainer.items[slotIndex]);
-        else
-            Debug.Log("Slot " + slotIndex + ", " + currentContainer.containerName + ", Empty");
-
-        
-
     }
 
-    private void MoveItem(ItemData tempItem, int slotIndex, ContainerData fromContainer, ContainerData toContainer, int freeSlotIndex)
+    private void MoveItem(ItemData tempItem, int slotIndex, ContainerData fromContainer, ContainerData toContainer)
     {
         fromContainer.items.RemoveAt(slotIndex);
         toContainer.items.Add(tempItem.GetClone());
-        //AddAt(freeSlotIndex);
     }
 
     private ContainerData GetCurrentContainer(SlotScript slot)
@@ -250,13 +233,13 @@ public class NewInventoryManager : MonoBehaviour
         return playerSlots.Contains(slot);
     }
 
+    private bool HasSpace(ContainerData containerData)
+    {
+        return containerData.items.Count < containerData.maxCapacity;
+    }
+
     private int GetFirstAvailableSlot(ContainerData containerData)
     {
-        if (containerData.items.Count == 0)
-        {
-            return 0;
-        }
-        else
         {
             for (int i = 0; i < containerData.maxCapacity - 1; i++)
             {
@@ -265,13 +248,7 @@ public class NewInventoryManager : MonoBehaviour
             }
         }
         return 0; //This will never happen????
-    }
-
-    private bool IsFull(ContainerData containerData)
-    {
-        Debug.Log(containerData.items.Count);
-        return containerData.items.Count >= containerData.maxCapacity;
-    }
+    } //Currently unused
 
     private void UpdateSlot()
     {
