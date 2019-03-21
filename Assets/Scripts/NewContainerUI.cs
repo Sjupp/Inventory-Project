@@ -1,29 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewContainerUI : MonoBehaviour
 {
     [SerializeField]
     private GameObject slotPrefab;
-    private ContainerData containerData;
-    List<GameObject> slots = new List<GameObject>();
+    [SerializeField]
+    private GameObject slotHolder;
+    [SerializeField]
+    private Text containerText;
 
-    public List<GameObject> UpdateContainer(ContainerData containerData)
+    private ContainerData containerData;
+    List<SlotScript> slots = new List<SlotScript>();
+
+    public List<SlotScript> UpdateContainer(ContainerData containerData)
     {
         this.containerData = containerData;
         UpdateUIFrameSize(containerData.maxCapacity);
         AdjustSlots(containerData.maxCapacity);
+        containerText.text = containerData.containerName;
         return slots;
     }
 
     private void UpdateUIFrameSize(int input)
     {
         int numberOfRows = Mathf.CeilToInt((input - 1) / 4);
+        int height = 85 + (50 * numberOfRows);
+        int width = 215;
         GetComponent<RectTransform>().sizeDelta =
-            new Vector2(215, 65 + (50 * numberOfRows));
+            new Vector2(width, height);
+        FitToScreen(width, height);
     }
 
+    #region Slots
     private void AdjustSlots(int newAmountOfSlots)
     {
         int currentAmountOfSlots = slots.Count;
@@ -35,7 +46,7 @@ public class NewContainerUI : MonoBehaviour
             RemoveSlots(diff);
 
         currentAmountOfSlots = slots.Count;
-        Debug.Log("Adjusting slot count to " + currentAmountOfSlots);
+        UpdateListeners();
     }
 
     private void AddSlots(int diff)
@@ -44,11 +55,9 @@ public class NewContainerUI : MonoBehaviour
 
         for (int i = sC; i < sC + diff; i++)
         {
-            slots.Add(Instantiate<GameObject>(slotPrefab, transform));
+            GameObject temp = Instantiate<GameObject>(slotPrefab, slotHolder.transform);
+            slots.Add(temp.GetComponent<SlotScript>());
         }
-
-        AddButtonListeners();
-
     }
 
     private void RemoveSlots(int diff)
@@ -56,26 +65,47 @@ public class NewContainerUI : MonoBehaviour
         int targetAmount = ((slots.Count - 1) - Mathf.Abs(diff));
         for (int i = slots.Count - 1; i > targetAmount; i--)
         {
-            Destroy(slots[i]);
+            Destroy(slots[i].gameObject);
             slots.RemoveAt(i);
         }
     }
+    #endregion
 
-    private void AddButtonListeners()
+    private void UpdateListeners()
     {
         var iManager = NewInventoryManager.Instance;
         for (int i = 0; i < slots.Count; i++)
         {
             int slotIndex = i;
-            //var slotIndex = slots[i].GetComponent<NewSlotScript>();
-            var button = slots[i].GetComponent<CustomButton>();
+            var button = slots[i];
 
-            button.enter.AddListener(delegate { iManager.SlotEnter(slotIndex, containerData); });
-            button.downLeft.AddListener(delegate { iManager.SlotDownLeft(slotIndex, containerData); });
-            button.downRight.AddListener(delegate { iManager.SlotDownRight(slotIndex, containerData); });
-            button.upLeft.AddListener(delegate { iManager.SlotUpLeft(slotIndex, containerData); });
-            button.upRight.AddListener(delegate { iManager.SlotUpRight(slotIndex, containerData); });
-            button.exit.AddListener(delegate { iManager.SlotExit(slotIndex, containerData); });
+            button.slotIndex = slotIndex;
+            button.containerData = containerData;
+        }
+    }
+
+    private void FitToScreen(int containerWidth, int containerHeight)
+    {
+        var currentPos = GetComponent<RectTransform>();
+
+        if (currentPos.anchoredPosition.y > 0)
+        {
+            currentPos.anchoredPosition = new Vector2(currentPos.anchoredPosition.x, 0);
+        }
+
+        if (currentPos.anchoredPosition.y - containerHeight < -Screen.height)
+        {
+            currentPos.anchoredPosition = new Vector2(currentPos.anchoredPosition.x, -Screen.height + containerHeight);
+        }
+
+        if (currentPos.anchoredPosition.x > containerWidth + Screen.width)
+        {
+            currentPos.anchoredPosition = new Vector2(Screen.width - containerWidth, currentPos.anchoredPosition.y);
+        }
+
+        if (currentPos.anchoredPosition.x < 0)
+        {
+            currentPos.anchoredPosition = new Vector2(0, currentPos.anchoredPosition.y);
         }
     }
 

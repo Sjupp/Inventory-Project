@@ -25,18 +25,18 @@ public class UIHandler : MonoBehaviour
 
     #region ButtonEvents
 
-    public void SlotEnter(ContainerUI container, SlotScript slot)
+    public void SlotEnter(ContainerUI container, OldSlotScript slot)
     {
         //Debug.Log("");
         slot.UpdateSlot();
     }
 
-    public void SlotDown(ContainerUI container, SlotScript slot)
+    public void SlotDown(ContainerUI container, OldSlotScript slot)
     {
         //Debug.Log("2");
     }
 
-    public void SlotUp(ContainerUI container, SlotScript slot)
+    public void SlotUp(ContainerUI container, OldSlotScript slot)
     {
 
         if (slot.slotItem != null)
@@ -68,14 +68,14 @@ public class UIHandler : MonoBehaviour
         }
     }
 
-    public void SlotExit(ContainerUI container, SlotScript slot)
+    public void SlotExit(ContainerUI container, OldSlotScript slot)
     {
         //Debug.Log("4");
     }
 
     #endregion
 
-    public void MoveObjectInSlot(SlotScript slot, ContainerData from, ContainerData to)
+    public void MoveObjectInSlot(OldSlotScript slot, ContainerData from, ContainerData to)
     {
         if (from.items.Count != 0)
         {

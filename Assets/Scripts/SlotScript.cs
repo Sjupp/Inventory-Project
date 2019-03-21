@@ -1,33 +1,60 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-
-public class SlotScript : MonoBehaviour
+public class SlotScript : ClickableElement
 {
-    public ContainerUI ParentContainer { get; set; } // Is set upon creation inside ContainerUI class
-    //public ContainerData ParentContainerData { get; set; }
-    public int SlotID { get; set; }
-    public int SlotNumber { get { return (SlotID + 1); } }
+    public int slotIndex;
+    public ContainerData containerData;
 
-    public ItemData slotItem;
-
-    public void UpdateSlot()
+    public override void DoubleClick(PointerEventData data)
     {
-        if (ParentContainer != null)
+    }
+
+    public override void Drag(PointerEventData data)
+    {
+        if (data.button == PointerEventData.InputButton.Left)
         {
-            if (ParentContainer.containerData.items.Count > SlotID)
-            {
-                slotItem = ParentContainer.containerData.items[SlotID];
-                gameObject.GetComponent<Image>().sprite = slotItem.sprite;
-            }
-            else
-            {
-                slotItem = null;
-                gameObject.GetComponent<Image>().sprite = null;
-            }
+            Debug.Log("Left Click Dragging");
         }
+    }
+
+    public override void Enter(PointerEventData data)
+    {
+        NewInventoryManager.Instance.SlotEnter(this);
+    }
+
+    public override void Exit(PointerEventData data)
+    {
+        NewInventoryManager.Instance.SlotExit(slotIndex, containerData);
+    }
+
+    public override void LeftClick(PointerEventData data)
+    {
+        NewInventoryManager.Instance.SlotLeftClick(this, slotIndex);
+    }
+
+    public override void LeftDown(PointerEventData data)
+    {
+    }
+
+    public override void LeftUp(PointerEventData data)
+    {
+    }
+
+    public override void RightClick(PointerEventData data)
+    {
+        NewInventoryManager.Instance.SlotRightClick(this, slotIndex);
+    }
+
+    public override void RightDown(PointerEventData data)
+    {
+    }
+
+    public override void RightUp(PointerEventData data)
+    {
     }
 
 }

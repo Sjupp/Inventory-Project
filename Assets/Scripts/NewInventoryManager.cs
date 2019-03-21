@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,12 @@ public class NewInventoryManager : MonoBehaviour
         }
     }
 
+
+    #region Debug Variables
+    int a = 0;
+    public Text debugText;
+    #endregion
+
     #region ContainerData Variables
     public ContainerData playerContainerData;
     public ContainerData targetContainerData;
@@ -38,8 +45,8 @@ public class NewInventoryManager : MonoBehaviour
     private NewContainerUI targetContainerScript;
     #endregion
 
-    private List<GameObject> playerSlots;
-    private List<GameObject> targetSlots;
+    private List<SlotScript> playerSlots;
+    private List<SlotScript> targetSlots;
 
     private void Start()
     {
@@ -52,7 +59,8 @@ public class NewInventoryManager : MonoBehaviour
         CreateNewContainerData("Container 1", 24);
         CreateNewContainerData("Container 2", 8);
         CreateNewContainerData("Container 3", 16);
-        SelectTargetContainer(); //Right click on something to set newTargetContainerData, currently hard-coded
+        //SelectTargetContainer(); //Right click on something to set newTargetContainerData, currently hard-coded
+        DebugEditText();
     }
 
     private void CreateNewContainerData(string str, int capacity)
@@ -63,36 +71,10 @@ public class NewInventoryManager : MonoBehaviour
         ContainerID++;
     }
 
-    private void CreateContainerUI()
-    {
-        playerContainerGO = Instantiate<GameObject>(containerPrefab, targetCanvas);
-        playerContainerGO.name = "Player Container";
-        playerContainerScript = playerContainerGO.GetComponent<NewContainerUI>();
-        playerContainerGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, -200);
-
-        targetContainerGO = Instantiate<GameObject>(containerPrefab, targetCanvas);
-        targetContainerGO.name = "Target Container";
-        targetContainerScript = targetContainerGO.GetComponent<NewContainerUI>();
-        targetContainerGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -200);
-    }
-
-    private void TogglePlayerContainerUI()
-    {
-        if (playerContainerGO.activeInHierarchy)
-            playerContainerGO.SetActive(false);
-        else
-            playerContainerGO.SetActive(true);
-    }
-
-    private void UpdatePlayerContainerUI()
-    {
-        playerSlots = playerContainerScript.UpdateContainer(playerContainerData);
-    }
-
-    private void SelectTargetContainer()
+    private void SelectTargetContainer(ContainerData containerData)
     {
         //Hard-coded value
-        var newTargetContainerData = otherContainers[0];
+        var newTargetContainerData = containerData;
 
         if (newTargetContainerData.containerID != targetContainerData.containerID)
         {
@@ -102,18 +84,64 @@ public class NewInventoryManager : MonoBehaviour
         }
     }
 
+    #region UI Functions
+    private void CreateContainerUI()
+    {
+        playerContainerGO = Instantiate<GameObject>(containerPrefab, targetCanvas);
+        playerContainerGO.name = "Player Container";
+        playerContainerScript = playerContainerGO.GetComponent<NewContainerUI>();
+        playerContainerGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(((1920/2) - 200), (-(1080 / 2) - 200));
+        ToggleUI(playerContainerGO);
+
+        targetContainerGO = Instantiate<GameObject>(containerPrefab, targetCanvas);
+        targetContainerGO.name = "Target Container";
+        targetContainerScript = targetContainerGO.GetComponent<NewContainerUI>();
+        targetContainerGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(((1920 / 2) + 200), (-(1080 / 2) - 200));
+        ToggleUI(targetContainerGO);
+    }
+
+    private void ToggleUI(GameObject go)
+    {
+        if (go.activeInHierarchy)
+            go.SetActive(false);
+        else
+            go.SetActive(true);
+    }
+
+    private void UpdatePlayerContainerUI()
+    {
+        playerSlots = playerContainerScript.UpdateContainer(playerContainerData);
+    }
+
     private void UpdateContainerUI(ContainerData containerData)
     {
         targetSlots = targetContainerScript.UpdateContainer(containerData);
+        targetContainerGO.SetActive(true);
     }
+    #endregion
 
     #region ButtonEvents
-    public void SlotEnter(int slotIndex, ContainerData containerData)
+    public void SlotEnter(SlotScript slot)
     {
-        //Debug.Log("1");
-        
+
     }
 
+    public void SlotLeftClick(SlotScript slot, int slotIndex)
+    {
+
+    }
+
+    public void SlotRightClick(SlotScript slot, int slotIndex)
+    {
+        RequestMove(slot, slotIndex);
+    }
+
+    public void SlotExit(int slotIndex, ContainerData containerData)
+    {
+
+    }
+
+    #region If Using Down/Up
     public void SlotDownLeft(int slotIndex, ContainerData containerData)
     {
         //Debug.Log("2a");
@@ -121,12 +149,7 @@ public class NewInventoryManager : MonoBehaviour
 
     public void SlotDownRight(int slotIndex, ContainerData containerData)
     {
-        Debug.Log(slotIndex);
-
-        if (slotIndex < containerData.items.Count)
-            Debug.Log(containerData.items[slotIndex]);
-        else
-            Debug.Log("No item in here!");
+        //Debug.Log("2b");
     }
 
     public void SlotUpLeft(int slotIndex, ContainerData containerData)
@@ -138,34 +161,151 @@ public class NewInventoryManager : MonoBehaviour
     {
         //Debug.Log("3b");
     }
-
-    public void SlotExit(int slotIndex, ContainerData containerData)
-    {
-        //Debug.Log("4");
-    }
+    #endregion
     #endregion
 
-    private void UpdateSlot( )
+    #region Slot Functions
+
+    /*
+     * 1. Get Slot
+     * 2. See what container with BelongsToPlayer();
+     * 3. See if that container and slot has an item
+     * 4. See other container's slot if it has space available with GetFirstAvailableSlot();
+     * 5. Move Item to other container
+     */
+
+    private void RequestMove(SlotScript slot, int slotIndex)
     {
-        //slot[index].image = containderData.items[index].sprite;
+        ContainerData currentContainer;
+        ContainerData otherContainer;
+        ItemData tempItem;
+        bool freeSlot;
+        int freeSlotIndex;
+
+        Debug.Log(1);
+        currentContainer = GetCurrentContainer(slot);
+        Debug.Log(1);
+        tempItem = GetItem(currentContainer, slotIndex);
+        Debug.Log(1);
+        otherContainer = GetOtherContainer(currentContainer);
+        Debug.Log(1);
+        freeSlot = !IsFull(otherContainer);
+        Debug.Log(1);
+        if (freeSlot)
+        {
+            freeSlotIndex = GetFirstAvailableSlot(otherContainer);
+            //move what, in current slot, from container, to container, to new slot
+            MoveItem(tempItem, slotIndex, currentContainer, otherContainer, freeSlotIndex);
+        }
+        else
+            Debug.Log(otherContainer.containerName + " is full!");
+
+
+        if (tempItem)
+            Debug.Log("Slot " + slotIndex + ", " + currentContainer.containerName + ", " + currentContainer.items[slotIndex]);
+        else
+            Debug.Log("Slot " + slotIndex + ", " + currentContainer.containerName + ", Empty");
+
+        
+
     }
 
-    private void GetFirstAvailableSlot()
+    private void MoveItem(ItemData tempItem, int slotIndex, ContainerData fromContainer, ContainerData toContainer, int freeSlotIndex)
     {
-        //foreach, if slot == null, return slot
+        fromContainer.items.RemoveAt(slotIndex);
+        toContainer.items.Add(tempItem.GetClone());
+        //AddAt(freeSlotIndex);
+    }
+
+    private ContainerData GetCurrentContainer(SlotScript slot)
+    {
+        if (BelongsToPlayer(slot))
+            return playerContainerData;
+        else
+            return targetContainerData;
+    }
+    
+    private ContainerData GetOtherContainer(ContainerData containerData)
+    {
+        if (containerData.containerID != playerContainerData.containerID)
+            return playerContainerData;
+        else
+            return targetContainerData;
+    }
+
+    private ItemData GetItem(ContainerData currentContainer, int slotIndex)
+    {
+        if (slotIndex < currentContainer.items.Count)
+        {
+            return currentContainer.items[slotIndex];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private bool BelongsToPlayer(SlotScript slot)
+    {
+        return playerSlots.Contains(slot);
+    }
+
+    private int GetFirstAvailableSlot(ContainerData containerData)
+    {
+        if (containerData.items.Count == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            for (int i = 0; i < containerData.maxCapacity - 1; i++)
+            {
+                if (containerData.items[i] == null)
+                    return i;
+            }
+        }
+        return 0; //This will never happen????
+    }
+
+    private bool IsFull(ContainerData containerData)
+    {
+        Debug.Log(containerData.items.Count);
+        return containerData.items.Count >= containerData.maxCapacity;
+    }
+
+    private void UpdateSlot()
+    {
+        //slot[index].image = containderData.items[index].sprite;
     }
 
     private void UpdateAllRemainingSlots()
     {
         //for i = currentslot; i < slot.count, UpdateSlot()
     }
+    #endregion
 
-    //private void UpdateAllSlots(List<GameObject> slots)
-    //{
-    //    foreach (GameObject slot in slots)
-    //    {
-    //        slot.GetComponent<NewSlotScript>().image;
-    //    }
-    //}
+    // --- DEBUG FUNCTIONS ---
+    #region Debug Functions
+    public void DebugCycleContainers() //Cycle containers
+    {
+        int b = a % otherContainers.Count;
+        SelectTargetContainer(otherContainers[b]);
+        a++;
+    }
+
+    public void DebugTogglePlayerInventory()
+    {
+        ToggleUI(playerContainerGO);
+    }
+
+    public void DebugEditText()
+    {
+        debugText.text = "List of containers: \n";
+        for (int i = 0; i < otherContainers.Count; i++)
+        {
+            debugText.text += (otherContainers[i].containerName + '\n');
+        }
+    }
+    #endregion
 
 }

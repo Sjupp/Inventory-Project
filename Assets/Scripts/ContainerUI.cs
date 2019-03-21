@@ -34,7 +34,7 @@ public class ContainerUI : MonoBehaviour
         for (int i = 0; i < containerData.maxCapacity; i++)
         {
             slots[i] = Instantiate<GameObject>(slotPrefab, transform);
-            var slot = slots[i].GetComponent<SlotScript>();
+            var slot = slots[i].GetComponent<OldSlotScript>();
             slot.ParentContainer = this;
             slot.SlotID = i;
 
@@ -55,13 +55,13 @@ public class ContainerUI : MonoBehaviour
     {
         foreach (var item in slots)
         {
-            item.GetComponent<SlotScript>().UpdateSlot();
+            item.GetComponent<OldSlotScript>().UpdateSlot();
         }
     }
 
     public void UpdateOneSlot(int slotID)
     {
-        slots[slotID].GetComponent<SlotScript>().UpdateSlot();
+        slots[slotID].GetComponent<OldSlotScript>().UpdateSlot();
     }
 
 }

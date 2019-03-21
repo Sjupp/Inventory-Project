@@ -20,7 +20,6 @@ public class CustomButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     #region Events
 
-
     [SerializeField] public UnityEvent enter;
     [SerializeField] public UnityEvent downLeft;
     [SerializeField] public UnityEvent downRight;
